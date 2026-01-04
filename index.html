@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Women Mood Mixology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --mood-color-main: #b4b498; --mood-color-grad: #78716c; }
+        body { background-color: #0d0d0d; color: #f0f0f0; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: -apple-system, system-ui; overflow: hidden; }
+        .serif { font-family: 'Noto Serif SC', serif; }
+        .glow-bg { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vw; height: 100vw; background: radial-gradient(circle, var(--mood-color-main) 0%, transparent 70%); filter: blur(120px); opacity: 0.15; z-index: -1; transition: all 2.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-container { width: 170px; height: 215px; position: relative; border: 1.5px solid rgba(255,255,255,0.1); border-bottom-left-radius: 75px; border-bottom-right-radius: 75px; overflow: hidden; background: rgba(255,255,255,0.02); }
+        .liquid-wrapper { position: absolute; bottom: 0; left: 0; width: 100%; height: 45%; transition: height 2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .waves { position: absolute; top: -38px; left: 0; width: 100%; height: 40px; }
+        .parallax > use { animation: move-forever 5s cubic-bezier(.55,.5,.45,.5) infinite; }
+        .parallax > use:nth-child(1) { animation-delay: -2s; animation-duration: 7s; fill: var(--mood-color-main); opacity: 0.4; transition: fill 2s ease; }
+        .parallax > use:nth-child(2) { animation-delay: 0s; animation-duration: 4s; fill: var(--mood-color-main); opacity: 1; transition: fill 2s ease; }
+        @keyframes move-forever { 0% { transform: translate3d(-90px,0,0); } 100% { transform: translate3d(85px,0,0); } }
+        .liquid-body { width: 100%; height: 100%; position: relative; background: var(--mood-color-main); transition: background 2s ease; }
+        #result-view .liquid-body { background: linear-gradient(to bottom, var(--mood-color-main), var(--mood-color-grad)); }
+        .bubbles { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+        .bubble { position: absolute; bottom: -10px; background: rgba(255,255,255,0.3); border-radius: 50%; animation: rise 4s infinite ease-in; }
+        @keyframes rise { 0% { bottom: -10px; transform: translateX(0); opacity: 0; } 20% { opacity: 0.8; } 100% { bottom: 85%; transform: translateX(12px); opacity: 0; } }
+        .b1 { left: 15%; width: 4px; height: 4px; animation-duration: 3s; }
+        .b2 { left: 40%; width: 6px; height: 6px; animation-duration: 4.5s; animation-delay: 0.5s; }
+        .b3 { left: 70%; width: 3px; height: 3px; animation-duration: 3.5s; animation-delay: 1s; }
+        .card-inner { position: relative; overflow: hidden; background: #121212; backdrop-filter: blur(40px); border: 0.5px solid rgba(255,255,255,0.08); border-radius: 40px; padding: 35px 28px; width: 100%; max-width: 360px; box-shadow: 0 40px 100px rgba(0,0,0,0.7); text-align: center; z-index: 1; }
+        .card-inner::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at top left, var(--mood-color-main), transparent 60%); opacity: 0.12; z-index: -1; transition: all 1s ease; }
+        textarea { resize: none; border: 0.5px solid rgba(255,255,255,0.1) !important; }
+        .fade-out { opacity: 0; transition: opacity 0.8s ease; }
+    </style>
+</head>
+<body>
+
+    <div id="glow" class="glow-bg"></div>
+
+    <main class="w-full max-w-sm flex flex-col items-center px-6">
+        
+        <section id="home-view" class="w-full flex flex-col items-center space-y-10 py-10 transition-all duration-700">
+            <header class="text-center space-y-3">
+                <p class="text-[10px] tracking-[0.5em] opacity-30 uppercase">Women Mood Mixology</p>
+                <h1 class="text-2xl font-light tracking-widest opacity-80">倾听你的情绪...</h1>
+            </header>
+
+            <div class="glass-container">
+                <div id="main-liquid" class="liquid-wrapper">
+                    <svg class="waves" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+                        <defs><path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" /></defs>
+                        <g class="parallax"><use xlink:href="#gentle-wave" x="48" y="3" /><use xlink:href="#gentle-wave" x="48" y="0" /></g>
+                    </svg>
+                    <div class="liquid-body"><div class="bubbles"><span class="bubble b1"></span><span class="bubble b2"></span><span class="bubble b3"></span></div></div>
+                </div>
+            </div>
+
+            <div class="w-full space-y-8 flex flex-col items-center" id="home-controls">
+                <textarea id="mood-input" placeholder="此刻你感觉如何？" class="w-full bg-white/5 rounded-3xl p-6 text-sm text-center focus:outline-none focus:bg-white/10 transition-all h-32 leading-relaxed"></textarea>
+                <button onclick="mixMood()" class="w-2/3 py-3 bg-white text-black rounded-full text-sm font-black tracking-widest hover:bg-gray-100 active:scale-95 transition-all shadow-xl">开始调制特调</button>
+            </div>
+        </section>
+
+        <section id="result-view" class="hidden w-full flex flex-col items-center py-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+            <div class="card-inner" id="result-card">
+                <div class="space-y-1 mb-6">
+                    <p class="text-[8px] tracking-[0.3em] opacity-30 uppercase mb-2">Your Exclusive Blend</p>
+                    <h2 id="res-cn-name" class="serif text-3xl font-black text-white leading-tight">酒名</h2>
+                    <p id="res-en-name" class="text-[10px] opacity-30 italic tracking-wider">English Name</p>
+                </div>
+
+                <div class="flex justify-center my-6 scale-105">
+                    <div class="glass-container border-none bg-transparent">
+                        <div id="res-liquid" class="liquid-wrapper" style="height: 70%;">
+                            <svg class="waves" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+                                <g class="parallax"><use xlink:href="#gentle-wave" x="48" y="3" /><use xlink:href="#gentle-wave" x="48" y="0" /></g>
+                            </svg>
+                            <div class="liquid-body"><div class="bubbles"><span class="bubble b1"></span><span class="bubble b2"></span><span class="bubble b3"></span></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-5 px-2 text-left">
+                    <div class="flex justify-between items-baseline border-b border-white/5 pb-2">
+                        <span class="text-[9px] opacity-30 uppercase tracking-widest">基酒 Base</span>
+                        <span id="res-base" class="text-xs font-bold">基酒名称</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-6 text-center">
+                        <div class="space-y-1"><p class="text-[8px] opacity-20 uppercase">Top</p><p id="res-top" class="text-[11px]">-</p></div>
+                        <div class="space-y-1 border-x border-white/5"><p class="text-[8px] opacity-20 uppercase">Mid</p><p id="res-mid" class="text-[11px]">-</p></div>
+                        <div class="space-y-1"><p class="text-[8px] opacity-20 uppercase">Base</p><p id="res-bnote" class="text-[11px]">-</p></div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-[9px] opacity-20 uppercase tracking-tighter"><span>浓度 Level</span><span id="res-perc">0%</span></div>
+                        <div class="w-full h-[2px] bg-white/5 rounded-full overflow-hidden"><div id="res-fill" class="h-full transition-all duration-1000"></div></div>
+                    </div>
+                </div>
+
+                <div class="h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent my-6"></div>
+                <div class="flex flex-col items-center space-y-2.5 px-4">
+                    <p id="res-quote" class="text-[12px] opacity-60 italic font-serif leading-relaxed">“金句内容”</p>
+                    <p id="res-flavor-tag" class="text-[9px] opacity-25 tracking-[0.2em] uppercase font-bold">- Flavor Tag -</p>
+                </div>
+            </div>
+
+            <div class="flex justify-between w-full mt-10 px-2">
+                <button onclick="location.reload()" class="text-[10px] tracking-[0.3em] opacity-30 hover:opacity-100 uppercase font-bold transition-all">← Back to Lab</button>
+                <button onclick="nextRecommendation()" class="text-[10px] tracking-[0.3em] opacity-60 hover:opacity-100 uppercase font-bold transition-all flex items-center gap-2">Next choice ↻</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // 1. 全方位语义逻辑分类
+        const SEMANTIC_ENGINE = {
+            CATEGORIES: {
+                DEEP: ["累", "难", "老板", "班", "项目", "压力", "失眠", "深夜", "思考", "成年", "孤独", "旧", "怀念", "苦", "沉重", "烦", "压抑"],
+                FRESH: ["开心", "阳光", "夏天", "爽", "解渴", "简单", "凉快", "舒服", "呼吸", "快乐", "自由", "微风", "顺利", "棒", "喜", "顺利"],
+                ROMANTIC: ["爱", "温柔", "恋爱", "约会", "甜", "精致", "梦", "心动", "优雅", "派对", "期待", "椰", "假期"],
+                SHARP: ["痛快", "疯狂", "帅", "释放", "冷", "硬", "醒", "干练", "坚定", "纯粹", "坚定", "清醒", "理性", "果断", "辣"]
+            },
+            INTENSITY_MODIFIERS: ["非常", "超级", "很", "极度", "太", "！", "死", "绝对"],
+            SENTIMENT: { POS: ["棒", "美", "好", "耶"], NEG: ["差", "愁", "死", "痛"] }
+        };
+
+        // 2. 18款全酒单数据库
+        const BAR_MENU = [
+            { cn_name: "尼格罗尼", en_name: "Negroni", flavor_tag: "The Bitter Reality", base: "金酒", top: "橙皮", mid: "草本", bnote: "橡木", intensity: "30%", category: "DEEP", colors: { s: '#991b1b', e: '#450a0a' }, quote: "“在这个世界上，只有苦涩才显得真实。”" },
+            { cn_name: "古典", en_name: "Old Fashioned", flavor_tag: "The Carousel of Time", base: "波本威士忌", top: "方糖", mid: "樱桃", bnote: "木质", intensity: "35%", category: "DEEP", colors: { s: '#b45309', e: '#451a03' }, quote: "“这不是时光机，这是一个旋转木马，带着我们回到心碎的地方。”" },
+            { cn_name: "教父", en_name: "Godfather", flavor_tag: "Silent Authority", base: "威士忌", top: "杏仁", mid: "烟熏", bnote: "权力", intensity: "30%", category: "DEEP", colors: { s: '#d97706', e: '#78350f' }, quote: "“永远不要让别人知道你在想什么。” —— 《教父》" },
+            { cn_name: "威士忌酸", en_name: "Whiskey Sour", flavor_tag: "The Palatable Gold", base: "威士忌", top: "柠檬", mid: "苦精", bnote: "谷物", intensity: "22%", category: "DEEP", colors: { s: '#eab308', e: '#854d0e' }, quote: "“如果水里不加点威士忌，这水就没法喝。”" },
+            { cn_name: "榛子酸", en_name: "Hazelnut Sour", flavor_tag: "Forest Whisper", base: "榛子酒", top: "柠檬", mid: "坚果", bnote: "秋意", intensity: "18%", category: "DEEP", colors: { s: '#d97706', e: '#451a03' }, quote: "“秋天是第二个春天，每一片叶子都是一朵花。”" },
+            { cn_name: "话梅红茶嗨爆", en_name: "Tea Highball", flavor_tag: "Oriental Charm", base: "红茶威士忌", top: "话梅", mid: "茶香", bnote: "酸咸", intensity: "15%", category: "DEEP", colors: { s: '#92400e', e: '#451a03' }, quote: "“茶是生活的灵丹妙药。”" },
+            
+            { cn_name: "莫吉托", en_name: "Mojito", flavor_tag: "A Moveable Feast", base: "白朗姆酒", top: "青柠", mid: "薄荷", bnote: "苏打水", intensity: "12%", category: "FRESH", colors: { s: '#8d948d', e: '#064e3b' }, quote: "“如果你有幸在年轻时待过巴黎，那么余生它都会跟着你。”" },
+            { cn_name: "龙舌兰日出", en_name: "Tequila Sunrise", flavor_tag: "The Dawning Hope", base: "龙舌兰", top: "橙汁", mid: "红石榴", bnote: "阳光", intensity: "12%", category: "FRESH", colors: { s: '#f59e0b', e: '#ef4444' }, quote: "“太阳升起时，所有的阴影都会消失。”" },
+            { cn_name: "金汤力", en_name: "Gin & Tonic", flavor_tag: "Minimalist Reflection", base: "金酒", top: "杜松子", mid: "青柠", bnote: "奎宁", intensity: "15%", category: "FRESH", colors: { s: '#f0fdf4', e: '#dcfce7' }, quote: "“越简单的纯粹，越能照见灵魂的深度。”" },
+            { cn_name: "自由古巴", en_name: "Cuba Libre", flavor_tag: "Shout for Freedom", base: "朗姆酒", top: "可乐", mid: "青柠", bnote: "自由", intensity: "15%", category: "FRESH", colors: { s: '#4b5563', e: '#111827' }, quote: "“为了自由，干杯！”" },
+            { cn_name: "蜜瓜酸", en_name: "Melon Sour", flavor_tag: "Emerald Refreshment", base: "蜜瓜酒", top: "蜜瓜", mid: "柠檬", bnote: "清甜", intensity: "15%", category: "FRESH", colors: { s: '#bef264', e: '#3f6212' }, quote: "“绿色是世界的底色，可爱也由此而生。”" },
+            { cn_name: "嗨爆", en_name: "Highball", flavor_tag: "Simple High Times", base: "威士忌", top: "苏打水", mid: "气泡", bnote: "畅爽", intensity: "15%", category: "FRESH", colors: { s: '#fef3c7', e: '#b45309' }, quote: "“大口吞下气泡，让烦恼随风消散。”" },
+            { cn_name: "菠萝威士忌酸", en_name: "Pineapple Sour", flavor_tag: "Golden Tangy", base: "威士忌", top: "菠萝汁", mid: "醇厚", bnote: "活力", intensity: "20%", category: "FRESH", colors: { s: '#fbbf24', e: '#92400e' }, quote: "“夏天的租约太短。”" },
+
+            { cn_name: "椰香飘林", en_name: "Piña Colada", flavor_tag: "Creamy Escape", base: "朗姆酒", top: "椰奶", mid: "菠萝", bnote: "假期", intensity: "10%", category: "ROMANTIC", colors: { s: '#fef3c7', e: '#f59e0b' }, quote: "“哪怕在雨中漫步，也请保持那份温柔。”" },
+            { cn_name: "杏仁酸", en_name: "Amaretto Sour", flavor_tag: "Bittersweet Romance", base: "杏仁酒", top: "柠檬", mid: "蛋白霜", bnote: "丝滑", intensity: "18%", category: "ROMANTIC", colors: { s: '#fde68a', e: '#78350f' }, quote: "“爱是唯一的苦甜参半。”" },
+            { cn_name: "大都会", en_name: "Cosmopolitan", flavor_tag: "Pink Urban Chic", base: "伏特加", top: "蔓越莓", mid: "君度", bnote: "柠檬", intensity: "18%", category: "ROMANTIC", colors: { s: '#c5a3a1', e: '#881337' }, quote: "“所有的甜美，都是为了犒赏此刻的你。”" },
+
+            { cn_name: "长岛冰茶", en_name: "Long Island", flavor_tag: "Dangerous Sweet Dream", base: "五大基酒", top: "可乐", mid: "柠檬", bnote: "伪装", intensity: "28%", category: "SHARP", colors: { s: '#78350f', e: '#451a03' }, quote: "“看起来像茶，喝起来像梦。”" },
+            { cn_name: "僵尸", en_name: "Zombie", flavor_tag: "Strong Awakening", base: "朗姆酒", top: "热带水果", mid: "辛辣", bnote: "烈性", intensity: "40%", category: "SHARP", colors: { s: '#ea580c', e: '#7c2d12' }, quote: "“醒来时，我已不记得我是谁。”" },
+            { cn_name: "金酒酸", en_name: "Gin Sour", flavor_tag: "Simple Sophistication", base: "金酒", top: "柠檬", mid: "糖浆", bnote: "纯粹", intensity: "22%", category: "SHARP", colors: { s: '#f0fdf4', e: '#166534' }, quote: "“简单是极致的复杂。”" }
+        ];
+
+        let sortedMatches = []; let currentIndex = 0;
+
+        function setUIColors(p) {
+            document.documentElement.style.setProperty('--mood-color-main', p.s);
+            document.documentElement.style.setProperty('--mood-color-grad', p.e);
+        }
+
+        function mixMood() {
+            const input = document.getElementById('mood-input').value;
+            if(!input) return alert("请告诉我你的心情...");
+
+            // --- 进阶语义算法：词丛匹配 + 语气加权 ---
+            sortedMatches = BAR_MENU.map(drink => {
+                let score = 0;
+                // 1. 意图分类匹配 (权重 3.0)
+                SEMANTIC_ENGINE.CATEGORIES[drink.category].forEach(k => {
+                    if(input.includes(k)) score += 3.0;
+                });
+                // 2. 语气修正 (语气词加成)
+                SEMANTIC_ENGINE.INTENSITY_MODIFIERS.forEach(m => {
+                    if(input.includes(m)) score *= 1.2;
+                });
+                // 3. 情感极性偏置
+                SEMANTIC_ENGINE.SENTIMENT.POS.forEach(p => { if(input.includes(p)) score += (drink.category === "FRESH" ? 1 : 0); });
+                SEMANTIC_ENGINE.SENTIMENT.NEG.forEach(n => { if(input.includes(n)) score += (drink.category === "DEEP" ? 1 : 0); });
+
+                score += Math.random() * 0.5; // 破除并列
+                return { ...drink, score };
+            }).sort((a, b) => b.score - a.score);
+
+            currentIndex = 0;
+            const target = sortedMatches[currentIndex];
+            setUIColors(target.colors);
+            document.getElementById('main-liquid').style.height = '92%';
+            document.getElementById('home-controls').classList.add('fade-out');
+            document.querySelector('#home-view header').classList.add('fade-out');
+
+            setTimeout(() => {
+                document.getElementById('home-view').classList.add('hidden');
+                document.getElementById('result-view').classList.remove('hidden');
+                updateResultCard(target);
+            }, 2200);
+        }
+
+        function updateResultCard(d) {
+            document.getElementById('res-cn-name').innerText = d.cn_name;
+            document.getElementById('res-en-name').innerText = d.en_name;
+            document.getElementById('res-flavor-tag').innerText = `- ${d.flavor_tag} -`;
+            document.getElementById('res-base').innerText = d.base;
+            document.getElementById('res-top').innerText = d.top;
+            document.getElementById('res-mid').innerText = d.mid;
+            document.getElementById('res-bnote').innerText = d.bnote;
+            document.getElementById('res-perc').innerText = d.intensity;
+            document.getElementById('res-fill').style.width = d.intensity;
+            document.getElementById('res-fill').style.backgroundColor = d.colors.s;
+            document.getElementById('res-quote').innerText = d.quote;
+            setUIColors(d.colors);
+        }
+
+        function nextRecommendation() {
+            currentIndex = (currentIndex + 1) % 3;
+            const card = document.getElementById('result-card');
+            card.style.opacity = 0;
+            setTimeout(() => {
+                updateResultCard(sortedMatches[currentIndex]);
+                card.style.opacity = 1;
+                card.classList.add('animate-in', 'fade-in', 'duration-700');
+            }, 400);
+        }
+    </script>
+</body>
+</html>
